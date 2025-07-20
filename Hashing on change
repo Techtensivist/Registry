@@ -1,0 +1,32 @@
+function hashID(id, salt) {
+  const raw = salt + id;
+  const hash = Utilities.computeDigest(Utilities.DigestAlgorithm.SHA_256, raw);
+  return hash.map(byte => ('0' + (byte & 0xff).toString(16)).slice(-2)).join('');
+}
+
+function checkAndHashNewRows() {
+  const sheet = SpreadsheetApp.getActiveSpreadsheet().getActiveSheet();
+  const salt = "Write Your Secret Salt Here"; // Use a secure salt here
+  const lastRow = sheet.getLastRow();
+
+  const columnBValues = sheet.getRange(2, 2, lastRow - 1).getValues(); // B2:B
+  const columnBRValues = sheet.getRange(2, 70, lastRow - 1).getValues(); // BR2:BR
+
+  const output = [];
+
+  for (let i = 0; i < columnBValues.length; i++) {
+    const id = columnBValues[i][0];
+    const existingHash = columnBRValues[i][0];
+
+    if ((id !== "" && id !== null && existingHash === "")) {
+      const trimmedID = id.toString().trim();
+      const hashed = hashID(trimmedID, salt);
+      output.push([hashed]);
+    } else {
+      output.push([existingHash]); // keep existing value
+    }
+  }
+
+  // Write back only if there are changes
+  sheet.getRange(2, 70, output.length, 1).setValues(output);
+}
