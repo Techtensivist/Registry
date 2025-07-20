@@ -10,7 +10,7 @@ function checkAndHashNewRows() {
   const lastRow = sheet.getLastRow();
 
   const columnBValues = sheet.getRange(2, 2, lastRow - 1).getValues(); // B2:B
-  const columnBRValues = sheet.getRange(2, 70, lastRow - 1).getValues(); // BR2:BR
+  const columnBRValues = sheet.getRange(2, 3, lastRow - 1).getValues(); // C2:C
 
   const output = [];
 
@@ -28,5 +28,5 @@ function checkAndHashNewRows() {
   }
 
   // Write back only if there are changes
-  sheet.getRange(2, 70, output.length, 1).setValues(output);
+  sheet.getRange(2, 3, output.length, 1).setValues(output);
 }
